@@ -1,0 +1,14 @@
+{
+  "name": "architecture-skills",
+  "owner": {
+    "name": "Cesar D. Velandia"
+  },
+  "description": "Agent skills for architecture docs kept in the repo.",
+  "plugins": [
+    {
+      "name": "architecture-skills",
+      "source": "./",
+      "description": "Agent skills that document a codebase's architecture: ARCHITECTURE.md, ADRs, a glossary and an architect's brief."
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "name": "architecture-skills",
+  "version": "0.1.0",
+  "description": "Agent skills that document a codebase's architecture: ARCHITECTURE.md, ADRs, a glossary and an architect's brief.",
+  "author": { "name": "Cesar D. Velandia" },
+  "repository": "https://github.com/cdvel/architecture-skills",
+  "license": "MIT",
+  "keywords": ["architecture", "adr", "glossary", "documentation", "skills"]
+}
