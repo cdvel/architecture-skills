@@ -14,6 +14,6 @@ PASS if all of these hold:
 5. Factual parts cite the ARCHITECTURE.md section they come from, for example [Components] or [Data flows].
 6. Opinions sit under a heading that labels them as opinion (for example "Assessment (opinion)"), covering strengths, risks and open questions.
 7. If the assessment criticizes running payment capture in the worker, sharing one database, or cookie sessions, it mentions the reason the document records for that choice.
-8. It does not say the document is out of date or behind HEAD.
+8. It does not claim the document is out of date or behind HEAD. Saying staleness could not be checked is fine.
 
 FAIL if any of these does not hold.
