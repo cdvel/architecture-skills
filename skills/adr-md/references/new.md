@@ -42,7 +42,7 @@ Apply the rule in SKILL.md before drafting. If it fails, push back and ask befor
 - **References:** related ADRs, source files, external documents.
 - **Terms:** each term the decision introduces or redefines, with a one-sentence definition. Skip ordinary words and terms already defined the same way elsewhere; keep redefinitions.
 
-If the request says the decision is already taken and should be recorded as accepted, finish `new`, then run `accept` in the same session.
+Run `accept` in the same session only when the user explicitly asks for the record to be accepted (for example "record it as accepted"); then finish `new` first. A decision described as already made, or a general "go ahead", is not such a request: the record stays Draft or Proposed, and the report says how to accept it. This keeps any records it supersedes unchanged until someone accepts it.
 
 ## Combined review
 
