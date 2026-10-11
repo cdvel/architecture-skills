@@ -52,7 +52,7 @@ Before calling a choice a weakness, look for its reason: the key decisions table
 
 ## Layout
 
-Begin the reply with the verdict paragraph: no preamble and no heading before it. Then the parts below, in order, each under a short heading.
+The reply's first line is the verdict paragraph itself. Nothing comes before it: no heading, no greeting, no sentence about what follows. Then the parts below, in order, each under a short heading.
 
 | Part | Form | Draws on |
 |---|---|---|
