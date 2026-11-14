@@ -87,7 +87,7 @@ ASCII only, so they read the same in a terminal, a diff and a browser. Boxes nam
 ## Writing rules
 
 - Name real files and symbols, never "the main file" or "the API".
-- Name concepts with the glossary's terms when there is a glossary. Where the code's name differs, give the mapping once, where the concept first appears (class `Task`, the glossary's *job*).
+- Name concepts with the glossary's terms when there is a glossary. Where the code's name differs, give the mapping once, where the concept first appears (class `Task`, the glossary's *job*). Never define a glossary term, not even in passing; link the glossary. A conflict note quotes only the disputed words, with the glossary's line.
 - Quote code from the repo with its `path:start-end`; never write pseudocode.
 - Say why, not only what: reasons from comments, ADRs and structure.
 - Tie facts to the recorded commit or version ("as of `<commit_short>`"), never "currently".

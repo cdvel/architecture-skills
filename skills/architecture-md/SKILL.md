@@ -13,7 +13,7 @@ One detailed `ARCHITECTURE.md` written from the code, for onboarding, reference,
 - **Static reading.** Missing evidence never stops the run; it becomes a marked gap ([quality.md](references/quality.md)).
 - **Code over docs.** READMEs, wikis and comments are leads. Where they contradict the code, the doc follows the code and notes the conflict with both citations.
 - **Observed or inferred.** Every fact cites `path:line` or `path:start-end`. Every inference starts with *Inferred:* and names what it rests on. Nothing unmarked is a guess.
-- **Glossary for names, code for facts.** A glossary (`GLOSSARY.md` or `TERMINOLOGY.md`, at the root or in `docs/`) sets what things are called. Name concepts with its terms; where the code uses another name, give the mapping once (class `Task`, the glossary's *job*). Where the code contradicts a definition, the doc follows the code and notes the conflict with both citations. Never copy definitions into the doc or write to the glossary. No glossary is not a gap: names follow the code.
+- **Glossary for names, code for facts.** A glossary (`GLOSSARY.md` or `TERMINOLOGY.md`, at the root or in `docs/`) sets what things are called. Name concepts with its terms; where the code uses another name, give the mapping once (class `Task`, the glossary's *job*). Where the code contradicts a definition, the doc follows the code and notes the conflict with both citations. Never define a glossary term in the doc, not even in passing or in a vocabulary line; link the glossary instead. A conflict note quotes only the disputed words. Never write to the glossary. No glossary is not a gap: names follow the code.
 
 ## Options
 
