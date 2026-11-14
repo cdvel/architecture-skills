@@ -49,4 +49,4 @@ claude plugin eval . --runs 1 --model <model> --ablation none --scaffold --trust
 ## Other measurements
 
 - **Citations:** in the ARCHITECTURE.md written by the fresh-run case (2026-11-13, Opus 5.5), all 82 `path:line` citations pointed at existing lines of the test repo; six sampled citations matched the code they cite.
-- **Context cost** (`claude plugin details`): the four skill descriptions add about 1.2k tokens to every session; an invoked skill loads about 2k more (`glossary-md` about 3.4k), plus reference files only for the step in use.
+- **Context cost** (`claude plugin details`): the four skill descriptions add about 1.2k tokens to every session; an invoked skill loads about 2k more (`glossary-md` about 3k), plus reference files only for the step in use.
