@@ -69,7 +69,7 @@ Call a skill as `/architecture-skills:<name>`, or ask in plain words. Each skill
 
 ### architecture-md
 
-Reads the code and writes `docs/ARCHITECTURE.md`: summary and key decisions, C4 diagrams, components with a table of their files, data flows, infrastructure and CI/CD, security with trust boundaries and a threat table, configuration and data stores.
+Reads the code and writes `docs/ARCHITECTURE.md`: summary and key decisions, C4 diagrams, components with a table of their files, data flows, infrastructure and CI/CD, security with trust boundaries and a threat table, configuration and data stores. If the repo has a glossary, the doc uses its terms and notes where the code disagrees with a definition.
 
 > [!NOTE]
 > Each doc records the commit it describes. A rerun after code changes rewrites only the sections whose code changed and copies text between `<!-- keep -->` markers byte for byte. The skill only reads: it never runs builds, tests or the code.
@@ -250,7 +250,7 @@ Full reply: [`examples/image-resizer/BRIEF.md`](examples/image-resizer/BRIEF.md)
 
 ## Tests
 
-`evals/` has 43 cases for `claude plugin eval`: 27 check that each skill loads for its own requests and not for others, and 16 check behavior on small test repos. Results of the last run: [`evals/RESULTS.md`](evals/RESULTS.md).
+`evals/` has 44 cases for `claude plugin eval`: 27 check that each skill loads for its own requests and not for others, and 17 check behavior on small test repos. Results of the last run: [`evals/RESULTS.md`](evals/RESULTS.md).
 
 ## Background
 
