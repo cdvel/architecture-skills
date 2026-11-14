@@ -171,14 +171,15 @@ Full record: [`examples/image-resizer/docs/adr/0001-resize-images-in-a-separate-
 
 ### glossary-md
 
-Keeps `docs/GLOSSARY.md` as one sorted table: each term with one definition and its source (an ADR, a standard or a team convention). It is the only skill that writes the glossary.
+Keeps `docs/GLOSSARY.md` as one sorted table: each term with one definition and its source (an ADR, a standard or a team convention). It can draft a first glossary from the terms the code and docs already use, and when a term is renamed, the old name keeps a row pointing to the new one while it still appears in the repo. It is the only skill that writes the glossary.
 
 <details>
 <summary><b>Commands</b></summary>
 
 | Command | Effect |
 |---|---|
-| `add "<term>"` | Adds or rewords a term, drafting a definition from how the repo uses it if none is given |
+| `add "<term>"` | Adds, rewords or renames a term, drafting a definition from how the repo uses it if none is given |
+| `draft` | Proposes terms from the code and docs, each with a draft definition and where it is used, for you to accept, edit or skip |
 | `backfill` | Adds the terms of accepted ADRs, record by record |
 | `reconcile` | Finds duplicates, unused terms, broken ADR links and format problems, then applies the fixes you approve |
 
@@ -250,13 +251,14 @@ Full reply: [`examples/image-resizer/BRIEF.md`](examples/image-resizer/BRIEF.md)
 
 ## Tests
 
-`evals/` has 44 cases for `claude plugin eval`: 27 check that each skill loads for its own requests and not for others, and 17 check behavior on small test repos. Results of the last run: [`evals/RESULTS.md`](evals/RESULTS.md).
+`evals/` has 47 cases for `claude plugin eval`: 28 check that each skill loads for its own requests and not for others, and 19 check behavior on small test repos. Results of the last run: [`evals/RESULTS.md`](evals/RESULTS.md).
 
 ## Background
 
 - [ARCHITECTURE.md](https://matklad.github.io/2021/02/06/ARCHITECTURE.md.html), matklad
 - [Documenting architecture decisions](https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions), Michael Nygard
 - [Ubiquitous language](https://martinfowler.com/bliki/UbiquitousLanguage.html), Eric Evans's term, summarized by Martin Fowler
+- [Generated glossary](https://martinfowler.com/bliki/GeneratedGlossary.html), Martin Fowler
 
 ## License
 

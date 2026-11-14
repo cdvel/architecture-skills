@@ -142,7 +142,7 @@ EOF
 cat > docs/GLOSSARY.md <<'EOF'
 # Glossary
 
-This file is the project's current vocabulary: each term has one definition and the source it comes from. The Source column is a citation, not a history. Rows that no longer apply are removed, not marked.
+This file is the project's current vocabulary: each term has one definition and the source it comes from. The Source column is a citation, not a history. A replaced term keeps a row naming its replacement while the old name still appears in the repo; other rows that no longer apply are removed.
 
 | Term | Definition | Source |
 |---|---|---|

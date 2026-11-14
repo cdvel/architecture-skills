@@ -1,11 +1,11 @@
 ---
 name: glossary-md
-description: Maintains the project glossary (docs/GLOSSARY.md, or an existing GLOSSARY.md or TERMINOLOGY.md) as one table of terms, each with a one-sentence definition and its source (an ADR, a standard or a team convention). Use when the user wants to start a glossary or a terminology list, add, define or rename terms for the team, record what we call something, write down the project's vocabulary or domain terms, build the ubiquitous language, backfill terms from existing ADRs, or clean up, deduplicate, sort or reconcile the glossary. Also takes the terms of a newly accepted ADR, handed over by adr-md or described in a message. Not for recording a decision (adr-md), writing ARCHITECTURE.md (architecture-md), a plain question about what a word means with nothing to record, API reference docs, or a glossary section inside a README.
+description: Maintains the project glossary (docs/GLOSSARY.md, or an existing GLOSSARY.md or TERMINOLOGY.md) as one table of terms, each with a one-sentence definition and its source (an ADR, a standard or a team convention). Use when the user wants to start a glossary or a terminology list, draft one from the terms the code and docs already use, add, define, rename or retire terms for the team, record what we call something, write down the project's vocabulary or domain terms, build the ubiquitous language, backfill terms from existing ADRs, or clean up, deduplicate, sort or reconcile the glossary. Also takes the terms of a newly accepted ADR, handed over by adr-md or described in a message. Not for recording a decision (adr-md), writing ARCHITECTURE.md (architecture-md), a plain question about what a word means with nothing to record, API reference docs, or a glossary section inside a README.
 ---
 
 # glossary-md
 
-Keeps the project's vocabulary in one file that describes the current state: rows that no longer apply are removed, not marked. This skill is the only writer of the file; it reads ADRs and never edits them.
+Keeps the project's vocabulary in one file that describes the current state. Rows that no longer apply are removed, except a replaced term, which keeps a row naming its replacement while the old name still appears in the repo. This skill is the only writer of the file; it reads ADRs and never edits them.
 
 ## Files
 
@@ -19,7 +19,7 @@ A new file starts like this:
 ```markdown
 # Glossary
 
-This file is the project's current vocabulary: each term has one definition and the source it comes from. The Source column is a citation, not a history. Rows that no longer apply are removed, not marked.
+This file is the project's current vocabulary: each term has one definition and the source it comes from. The Source column is a citation, not a history. A replaced term keeps a row naming its replacement while the old name still appears in the repo; other rows that no longer apply are removed.
 
 | Term | Definition | Source |
 |---|---|---|
@@ -34,6 +34,7 @@ This file is the project's current vocabulary: each term has one definition and 
   - `Predates ADRs`: in use before the register began; no ADR defines it.
   - `Standard: <name or link>`: used as an external standard defines it, e.g. `Standard: RFC 9110`.
   - `Convention`: agreed by the team outside any ADR. The default for a term the user defines.
+- **Replaced term:** when a term is renamed or replaced and the old name still appears in the repo outside the glossary (code, docs, ADRs), the old name keeps a row whose definition is `Don't use; say <new term>.` and whose source is the source of the change. It tells readers of old code, and agents writing new code, which name to use. Once the old name appears nowhere, the row is a removal candidate.
 
 **Sort order**, applied on every write: rows citing an ADR first, by the lowest ADR number they cite; then the other rows grouped as `Predates ADRs`, `Standard`, `Convention` (a row citing several types goes in the first group it cites). Within one ADR number or group, alphabetical by term, ignoring case. If a write moves rows that were out of order, say so in the report.
 
@@ -43,6 +44,7 @@ An accepted ADR changes a row, whatever its source, in two ways:
 
 - it **redefines** the term (different meaning): its definition and source replace the old ones. If the replaced source was an accepted ADR it doesn't supersede, report that two accepted records disagree.
 - it **adopts** the term (same meaning): it is added as a source, taking the place of any record it supersedes.
+- it **replaces** the term with a new name: the new term takes the row's meaning with this ADR as its source, and the old name becomes a replaced term.
 
 A row citing an ADR changes only that way, or when that ADR is fully superseded or deprecated: if it was the only source, the row is a removal candidate; otherwise only that ADR leaves the Source cell. Decline other changes to an ADR-sourced definition; changing it takes a new ADR (adr-md). Fixing a link or the layout is allowed. Other rows can be edited at any time.
 
@@ -65,14 +67,14 @@ Rows from two accepted ADRs that disagree can't be settled here: report them and
 
 ## Workflow
 
-Take the intent (`add`, `backfill`, `reconcile`) from the invocation or the request. Read the glossary in full and list the records with their status. If the glossary is missing or empty and accepted ADRs exist, offer `backfill` first; with pre-approval, or for a handoff, do the requested work and suggest `backfill` in the report.
+Take the intent (`add`, `draft`, `backfill`, `reconcile`) from the invocation or the request. Read the glossary in full and list the records with their status. If the glossary is missing or empty, offer `backfill` first when accepted ADRs exist, then `draft`; with pre-approval, or for a handoff, do the requested work and suggest the others in the report.
 
 ### add
 
 1. Take each term's definition and source from the request. When a definition is missing, draft one from how the repo uses the term and ask for approval (default: the draft). When the source is unclear, use `Convention` and say so.
 2. Check for duplicates, then write and report.
 
-Rewording or renaming a row without an ADR source works the same way. "What do we call X?" is answered from the glossary; if no row fits, propose a term and offer to add it.
+Rewording or renaming a row without an ADR source works the same way; a renamed term keeps its old name as a replaced term. "What do we call X?" is answered from the glossary; if no row fits, propose a term and offer to add it.
 
 ### Handoff from adr-md
 
@@ -86,6 +88,17 @@ Then, asking only about removals:
 4. For each fully superseded record, rows still citing it follow Changes from ADRs. Rows of a partially superseded record stay unless step 3 changed them.
 5. Write and report.
 
+### draft
+
+Proposes terms from what the repo already says, for people to review. Nothing is written before approval.
+
+1. Read the README and other docs, `ARCHITECTURE.md` if there is one, and the code: names of modules, types, tables, queues, routes, config keys and enum values, and comments. Terms an accepted ADR defines come through `backfill`: skip them here and suggest `backfill` in the report.
+2. Candidates are words and multi-word phrases with a meaning specific to this project: domain nouns, the things the system creates or stores, and common words used in a narrower sense than usual (a "job" that means one upload). Leave out general programming and product vocabulary (request, handler, database, HTTP, the names of libraries) unless the repo gives it a narrower meaning.
+3. Look for one thing under several names (one in the code, another in the docs) and one name with several meanings. One thing gets one row, named as the repo says it most often in prose, with the other names listed in the proposal. A name with several meanings gets a question; under pre-approval, leave it out and list it in the report.
+4. Draft each definition as one sentence from how the repo uses the term, with source `Convention`. Show each candidate with one to three `path:line` places where it is used or defined; these citations go in the proposal, not in the glossary.
+5. Propose at most about 25 terms per run, the most used first, and say how many more there are. Drop terms already in the glossary, then check duplicates.
+6. The user accepts, edits or skips each (default: accept). Write once and report.
+
 ### backfill
 
 1. Take the Accepted records in number order; skip all other statuses.
@@ -98,11 +111,11 @@ Then, asking only about removals:
 Check the whole file, show all findings at once, then apply the approved changes in one write:
 
 1. Duplicates and near-duplicates.
-2. Removal candidates: those Changes from ADRs defines, and rows without an ADR source whose term appears nowhere in the repo outside the glossary (ignoring case, plurals included). An ADR-sourced term that appears nowhere is only reported; its record may need deprecating with adr-md.
+2. Removal candidates: those Changes from ADRs defines, rows without an ADR source whose term appears nowhere in the repo outside the glossary (ignoring case, plurals included), and replaced terms whose old name appears nowhere. An ADR-sourced term that appears nowhere is only reported; its record may need deprecating with adr-md.
 3. Broken ADR links: fix the link if the register has that number under another filename; otherwise report it.
 4. Format: a missing preamble, empty Source cells, multi-sentence definitions in rows without an ADR source.
 5. Sort.
 
 ## Report
 
-End every run with: the glossary path; rows added, changed and removed; removal candidates still open; each choice taken under pre-approval; anything left for adr-md or a later `backfill`.
+End every run with: the glossary path; rows added, changed and removed; removal candidates still open; each choice taken under pre-approval; for `draft`, the other names found for each term, the names left out because they have several meanings, and how many candidates remain; anything left for adr-md or a later `backfill`.
