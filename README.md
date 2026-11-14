@@ -6,14 +6,52 @@
 
 Claude Code plugin · Agent Skills format · MIT license · tested on Claude Code 2.1.325 with Opus 5.5 and Sonnet 5.5; Haiku 5.5 not supported
 
-[Install](#install) · [Skills](#skills) · [How they connect](#how-the-skills-connect) · [Uses](#uses) · [Example](examples/image-resizer) · [Tests](evals/RESULTS.md)
+[How they connect](#how-the-skills-connect) · [Uses](#uses) · [Install](#install) · [Skills](#skills) · [Example](examples/image-resizer) · [Tests](evals/RESULTS.md)
 
 </div>
 
-Some of what you need to change a codebase safely isn't in any one file: how a request gets from the API to the database, why the queue replaced the cron job, whether "job" and "task" are one thing or two, where the README and the code disagree. These skills write it into `docs/`, next to the code, where people review it in pull requests and any agent can read it.
+Before you change a codebase, you need to know how its parts fit together, why they were built that way, and what the team means by words like "job" and "task". Some of that is in the code, spread across many files. The rest is in people's heads. These skills write it down in `docs/`, next to the code, where people review it in pull requests and agents can read it.
 
 > [!IMPORTANT]
 > The code is the source. Every fact in ARCHITECTURE.md cites `path:line`, every inference starts with *Inferred:*, and missing evidence is written down as a gap. Where a README or comment disagrees with the code, the doc follows the code and cites both.
+
+## How the skills connect
+
+```mermaid
+flowchart LR
+  code["source code"]:::io --> am("architecture-md"):::skill
+  dec["decisions you made"]:::io --> ad("adr-md"):::skill
+  words["terms you use"]:::io --> gm("glossary-md"):::skill
+  ad -. terms on accept .-> gm
+
+  subgraph docs["docs/ in your repo"]
+    A["ARCHITECTURE.md"]:::file
+    D["adr/"]:::file
+    G["GLOSSARY.md"]:::file
+  end
+
+  am == writes ==> A
+  ad == writes ==> D
+  gm == writes ==> G
+
+  A & D & G -. read .-> br("brief"):::skill
+  br --> chat["answer in chat"]:::io
+
+  classDef skill fill:#dbeafe,stroke:#1d4ed8,stroke-width:2px,color:#1e3a8a
+  classDef file fill:#f8fafc,stroke:#64748b,stroke-dasharray:4 3,color:#0f172a
+  classDef io fill:none,stroke:none
+  style docs fill:none,stroke:#94a3b8
+```
+
+Blue boxes are skills, dashed boxes are files in your repo. Thick arrows write; dotted arrows read or hand over. Beyond what is drawn, `architecture-md` links the key decisions it finds to their ADRs, `adr-md` checks a decision against the components it touches, and `brief` looks up an ADR for the reason behind a choice before it criticizes it. Existing files are used where they are: an `ARCHITECTURE.md` at the root, a `TERMINOLOGY.md`, ADRs in `docs/decisions/` or `adr/`.
+
+## Uses
+
+- **Talk to the codebase.** Ask how a flow works, why it was built that way, or what a term means, and get answers that cite the docs and the code.
+- **Understand an existing project.** Map an inherited repo before changing it, then read the brief.
+- **Review and harden.** The architecture doc covers auth, trust boundaries, secrets and a threat table. The brief weighs each risk against the recorded reason for the choice. The fixes you decide on become ADRs.
+- **Plan work in other tools.** The docs are plain markdown, so an agent with a project-tracking plugin can turn the doc's gaps and open work, or the brief's risks, into issues.
+- **Keep the repo as the source of truth.** Architecture, decisions and terms sit next to the code, go through pull requests, and record the commit they describe.
 
 ## Install
 
@@ -211,44 +249,6 @@ image-resizer is a small Python service that takes image uploads over HTTP and t
 Full reply: [`examples/image-resizer/BRIEF.md`](examples/image-resizer/BRIEF.md)
 
 </details>
-
-## How the skills connect
-
-```mermaid
-flowchart LR
-  code["source code"]:::io --> am("architecture-md"):::skill
-  dec["decisions you made"]:::io --> ad("adr-md"):::skill
-  words["terms you use"]:::io --> gm("glossary-md"):::skill
-  ad -. terms on accept .-> gm
-
-  subgraph docs["docs/ in your repo"]
-    A["ARCHITECTURE.md"]:::file
-    D["adr/"]:::file
-    G["GLOSSARY.md"]:::file
-  end
-
-  am == writes ==> A
-  ad == writes ==> D
-  gm == writes ==> G
-
-  A & D & G -. read .-> br("brief"):::skill
-  br --> chat["answer in chat"]:::io
-
-  classDef skill fill:#dbeafe,stroke:#1d4ed8,stroke-width:2px,color:#1e3a8a
-  classDef file fill:#f8fafc,stroke:#64748b,stroke-dasharray:4 3,color:#0f172a
-  classDef io fill:none,stroke:none
-  style docs fill:none,stroke:#94a3b8
-```
-
-Blue boxes are skills, dashed boxes are files in your repo. Thick arrows write; dotted arrows read or hand over. Beyond what is drawn, `architecture-md` links the key decisions it finds to their ADRs, `adr-md` checks a decision against the components it touches, and `brief` looks up an ADR for the reason behind a choice before it criticizes it. Existing files are used where they are: an `ARCHITECTURE.md` at the root, a `TERMINOLOGY.md`, ADRs in `docs/decisions/` or `adr/`.
-
-## Uses
-
-- **Talk to the codebase.** Ask how a flow works, why it was built that way, or what a term means, and get answers that cite the docs and the code.
-- **Understand an existing project.** Map an inherited repo before changing it, then read the brief.
-- **Review and harden.** The architecture doc covers auth, trust boundaries, secrets and a threat table. The brief weighs each risk against the recorded reason for the choice. The fixes you decide on become ADRs.
-- **Plan work in other tools.** The docs are plain markdown, so an agent with a project-tracking plugin can turn the doc's gaps and open work, or the brief's risks, into issues.
-- **Keep the repo as the source of truth.** Architecture, decisions and terms sit next to the code, go through pull requests, and record the commit they describe.
 
 ## Tests
 
