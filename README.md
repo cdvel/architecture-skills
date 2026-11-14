@@ -9,35 +9,56 @@ Claude Code plugin · Agent Skills format · MIT license · tested on Claude Cod
 /plugin install architecture-skills@architecture-skills
 ```
 
-Then ask in plain words: "document the architecture of this repo", "record why we chose a queue over cron", "give me an architect's brief".
+Then ask in plain words: "document the architecture of this repo", "record why we chose a queue over cron", "give me an architect's brief". To check the install, ask for a brief in a repo without docs: it should say no ARCHITECTURE.md was found and suggest `architecture-md`.
 
-## Motivation
+Some of what you need to change a codebase safely isn't in any one file: how a request gets from the API to the database, why the queue replaced the cron job, whether "job" and "task" are one thing or two, where the README and the code disagree. These skills write it into `docs/`, next to the code, where people review it in pull requests and any agent can read it.
 
-Some of what you need to change a codebase safely is not in any one file:
+## Skills
 
-- How a request gets from the API to the database. The agent works it out again every session by reading the same modules.
-- Why the queue replaced the cron job. Nobody wrote it down, so a later refactor brings the cron job back.
-- Whether "job", "task" and "run" are one thing or three, when the code uses all of them.
-- Where the README says one thing and the code does another.
+Call a skill as `/architecture-skills:<name>` with the options below, or ask in plain words. Each skill owns one file and reads the others' when they exist, so it works alone or with the rest.
 
-`architecture-md` writes the first down from the code and flags the last as a conflict. `adr-md` records the second, and `glossary-md` keeps the third. `brief` reads all of it back to you in chat, with an opinion.
+### architecture-md
 
-## What lands in your repo
+Reads the code and writes `docs/ARCHITECTURE.md`: summary and key decisions, C4 diagrams, components with a table of their files, data flows, infrastructure and CI/CD, security with a threat table, configuration and data stores. A rerun after code changes rewrites only the sections whose code changed.
 
-```
-docs/
-├── ARCHITECTURE.md    what the system is: parts, flows, security, config   architecture-md
-├── adr/               why it is built that way, one decision per file      adr-md
-│   ├── README.md
-│   └── 0001-capture-payments-in-worker.md
-└── GLOSSARY.md        what the project's terms mean                        glossary-md
-```
+| Option | Effect |
+|---|---|
+| `path` | Folder to document; default the repo root |
+| `--level exhaustive` | Adds every endpoint, dependency version and TODO; default `comprehensive` |
+| `--sections a,b` | Writes or updates only these sections |
+| `--output file` | Writes somewhere other than `docs/ARCHITECTURE.md` |
+| `--stride` | One STRIDE threat table per trust boundary |
+| `--verify` | Independent check of the finished doc before it is saved |
 
-`brief` writes nothing. Existing files are used where they are: an `ARCHITECTURE.md` at the root, a `TERMINOLOGY.md`, ADRs in `docs/decisions/` or `adr/`.
+### adr-md
+
+Records one decision per file in `docs/adr/`, with the options considered and the consequences, and keeps statuses, supersession links and the index consistent. It pushes back on a decision with a single option or one not worth an ADR, and refuses content edits to accepted records.
+
+| Command | Effect |
+|---|---|
+| `new "<topic>"` | Records a decision, asking first for anything missing |
+| `propose <n>` | Draft to Proposed |
+| `accept <n>` | Proposed to Accepted; marks the records it replaces Superseded; hands its terms to `glossary-md` |
+| `supersede <n>` | New record that replaces ADR n, fully or in part |
+| `deprecate <n>` | Accepted to Deprecated, with a reason |
+| `amend <n>` | Fixes typos, links and formatting in a locked record |
+| `index` | Rebuilds `docs/adr/README.md` |
+
+### glossary-md
+
+Keeps `docs/GLOSSARY.md` as one sorted table: each term with one definition and its source (an ADR, a standard or a team convention). It is the only skill that writes the glossary.
+
+| Command | Effect |
+|---|---|
+| `add "<term>"` | Adds or rewords a term, drafting a definition from how the repo uses it if none is given |
+| `backfill` | Adds the terms of accepted ADRs, record by record |
+| `reconcile` | Finds duplicates, unused terms, broken ADR links and format problems, then applies the fixes you approve |
+
+### brief
+
+Answers in chat from `ARCHITECTURE.md`, the ADRs and the glossary: a verdict, an ASCII diagram, the main parts, one request traced end to end, files to start reading, and an assessment marked as opinion. It says how many commits behind HEAD the doc is, and writes nothing. It takes an optional path to the doc; ask for a short brief to get only the verdict, diagram and assessment.
 
 ## How the skills connect
-
-Each skill owns one file and reads the others' when they exist, so it works alone or with the rest.
 
 ```mermaid
 flowchart LR
@@ -52,7 +73,7 @@ flowchart LR
   br -. reads .-> G
 ```
 
-Thick arrows write, dotted arrows read. `architecture-md` links the key decisions it finds to their ADRs, `adr-md` checks a decision against the components it touches, and `brief` looks up an ADR for the reason behind a choice before it criticizes it.
+Thick arrows write, dotted arrows read. `architecture-md` links the key decisions it finds to their ADRs, `adr-md` checks a decision against the components it touches, and `brief` looks up an ADR for the reason behind a choice before it criticizes it. Existing files are used where they are: an `ARCHITECTURE.md` at the root, a `TERMINOLOGY.md`, ADRs in `docs/decisions/` or `adr/`.
 
 ## Output
 
@@ -67,7 +88,7 @@ An excerpt from the ARCHITECTURE.md that `architecture-md` wrote in an eval run 
 > **Gap:** No staging or production environment is defined in the repo (no compose file, manifests or IaC (infrastructure as code)).
 > **Question:** Where does the pushed image run, and what deploys it?
 
-`brief` answers in chat with a verdict, an ASCII diagram, a table of parts, one request traced end to end, files to start reading, and an assessment marked as opinion. From a run on a second test repo, a small shop backend:
+From a `brief` run on a second test repo, a small shop backend:
 
 > In my view it's a sensible, small design with one good key decision (capturing payments off the request path). It isn't ready for real money yet: a retried capture can charge a customer twice, and nothing logs or alerts when a capture fails.
 >
@@ -78,45 +99,25 @@ An excerpt from the ARCHITECTURE.md that `architecture-md` wrote in an eval run 
 
 - **Talk to the codebase.** Ask how a flow works, why it was built that way, or what a term means, and get answers that cite the docs and the code.
 - **Understand an existing project.** Map an inherited repo before changing it, then read the brief.
-- **Review and harden.** The architecture doc covers auth, trust boundaries, secrets and a threat table (`--stride` for one STRIDE table per boundary). The brief weighs each risk against the recorded reason for the choice. The fixes you decide on become ADRs.
+- **Review and harden.** The architecture doc covers auth, trust boundaries, secrets and a threat table. The brief weighs each risk against the recorded reason for the choice. The fixes you decide on become ADRs.
 - **Plan work in other tools.** The docs are plain markdown, so an agent with a project-tracking plugin can turn the doc's gaps and open work, or the brief's risks, into issues.
 - **Keep the repo as the source of truth.** Architecture, decisions and terms sit next to the code, go through pull requests, and record the commit they describe.
 
 ## Accuracy
 
 - Every fact in ARCHITECTURE.md cites `path:line`, every inference starts with *Inferred:*, and missing evidence is a stated gap. Where a README or comment disagrees with the code, the doc follows the code and cites both.
-- Citations go stale as code moves, so each doc records its commit. `brief` says how many commits behind HEAD the doc is. A rerun of `architecture-md` rewrites only the sections whose code changed and copies text between `<!-- keep -->` markers byte for byte.
-- Accepted ADRs are locked. A changed decision is a new record that supersedes the old one, which stays as it was.
+- Citations go stale as code moves, so each doc records its commit, and `brief` says how far behind HEAD it is. Rerunning `architecture-md` brings it up to date and copies text between `<!-- keep -->` markers byte for byte.
 - `architecture-md` only reads. It never runs builds, tests or the code.
-
-## Usage
-
-```
-/architecture-skills:architecture-md                     # write or update docs/ARCHITECTURE.md
-/architecture-skills:architecture-md --stride            # with a STRIDE threat table per trust boundary
-/architecture-skills:brief                               # architect's brief in chat
-/architecture-skills:adr-md new "queue instead of cron"  # record a decision
-/architecture-skills:adr-md accept 3                     # accept ADR-0003; its terms go to the glossary
-/architecture-skills:glossary-md backfill                # add terms from accepted ADRs
-```
-
-To check the install, run `/architecture-skills:brief` in a repo without docs: it should say no ARCHITECTURE.md was found and suggest `architecture-md`. Options and rules are in each `skills/<name>/SKILL.md`.
 
 ## Tests
 
-`evals/` has 43 cases for `claude plugin eval`. 27 check that each skill fires for its own requests and stays out of others. 16 build a small git repo, send one request, and check the files and the reply: for example, that an accepted ADR can't be rewritten, that a one-option decision gets pushed back, that a rerun keeps unchanged sections byte for byte, and that `brief` reports staleness in commits without reading source code.
+`evals/` has 43 cases for `claude plugin eval`: 27 check that each skill loads for its own requests and not for others, and 16 check behavior on small test repos. Results of the last run: [evals/RESULTS.md](evals/RESULTS.md).
 
-In the eval run excerpted above, all 82 `path:line` citations pointed at real lines. The four skill descriptions add about 1.2k tokens to every session; an invoked skill loads 1.7k to 2.6k more, plus reference files only for the step in use.
+## Background
 
-## Limits
-
-- Tested in Claude Code, on small test repos. On a large repo, `architecture-md` shows a time estimate and asks before exploring.
-- Haiku 5.5 skips `adr-md`'s checks and edits accepted records directly.
-- Reading is static, so behavior that only shows at runtime becomes a gap.
-- `--stride` and `--verify` have no eval cases yet.
-- Not for API reference docs, README edits or a single diagram.
-
-Background: [ARCHITECTURE.md](https://matklad.github.io/2021/02/06/ARCHITECTURE.md.html) (matklad), [architecture decision records](https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions) (Michael Nygard), [ubiquitous language](https://martinfowler.com/bliki/UbiquitousLanguage.html) (Eric Evans, summarized by Martin Fowler).
+- [ARCHITECTURE.md](https://matklad.github.io/2021/02/06/ARCHITECTURE.md.html), matklad
+- [Documenting architecture decisions](https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions), Michael Nygard
+- [Ubiquitous language](https://martinfowler.com/bliki/UbiquitousLanguage.html), Eric Evans's term, summarized by Martin Fowler
 
 ## License
 
