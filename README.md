@@ -222,9 +222,9 @@ flowchart LR
   ad -. terms on accept .-> gm
 
   subgraph docs["docs/ in your repo"]
-    A["ARCHITECTURE.md<br/>what the system is"]:::file
-    D["adr/<br/>why it is built that way"]:::file
-    G["GLOSSARY.md<br/>what the terms mean"]:::file
+    A["ARCHITECTURE.md"]:::file
+    D["adr/"]:::file
+    G["GLOSSARY.md"]:::file
   end
 
   am == writes ==> A
