@@ -2,7 +2,7 @@
 
 # architecture-skills
 
-**Four Claude Code skills that keep a codebase's architecture, decisions and vocabulary in the repo:<br/>written from the code, cited to the line, and brought up to date by a rerun.**
+**Four agent skills that keep a codebase's architecture, decisions and vocabulary in the repo:<br/>written from the code, cited to the line, and brought up to date by a rerun.**
 
 Claude Code plugin · Agent Skills format · MIT license · tested on Claude Code 2.1.325 with Opus 5.5 and Sonnet 5.5; Haiku 5.5 not supported
 
