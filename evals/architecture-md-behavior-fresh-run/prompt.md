@@ -1,6 +1,6 @@
 ---
 name: architecture-md-behavior-fresh-run
-description: Fresh run on a small committed service with no existing doc; the request pre-approves every confirmation. Writes files, so run with --scaffold and --allow-tools Write Edit Bash.
+description: Fresh run on a small committed service with no existing doc and no glossary; the request pre-approves every confirmation. Writes files, so run with --scaffold and --allow-tools Write Edit Bash.
 tags: [architecture-md, behavior]
 plugins: ["../.."]
 max_turns: 40
