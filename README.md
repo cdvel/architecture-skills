@@ -43,8 +43,6 @@ flowchart LR
   style docs fill:none,stroke:#94a3b8
 ```
 
-Blue boxes are skills, dashed boxes are files in your repo. Thick arrows write; dotted arrows read or hand over. Beyond what is drawn, `architecture-md` links the key decisions it finds to their ADRs, `adr-md` checks a decision against the components it touches, and `brief` looks up an ADR for the reason behind a choice before it criticizes it. Existing files are used where they are: an `ARCHITECTURE.md` at the root, a `TERMINOLOGY.md`, ADRs in `docs/decisions/` or `adr/`.
-
 ## Uses
 
 - **Talk to the codebase.** Ask how a flow works, why it was built that way, or what a term means, and get answers that cite the docs and the code.
@@ -67,7 +65,7 @@ Then ask in plain words: "document the architecture of this repo", "record why w
 
 ## Skills
 
-Call a skill as `/architecture-skills:<name>`, or ask in plain words. Each skill owns one file and reads the others' when they exist, so it works alone or with the rest. The examples come from one run of all four on a 10-file test service; the full output is in [`examples/image-resizer`](examples/image-resizer).
+Call a skill as `/architecture-skills:<name>`, or ask in plain words. Each skill owns one file, keeps an existing one where it is, and reads the others' when they exist, so it works alone or with the rest. The examples come from one run of all four on a 10-file test service; the full output is in [`examples/image-resizer`](examples/image-resizer).
 
 ### architecture-md
 
