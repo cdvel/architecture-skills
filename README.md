@@ -62,18 +62,31 @@ Answers in chat from `ARCHITECTURE.md`, the ADRs and the glossary: a verdict, an
 
 ```mermaid
 flowchart LR
-  am["architecture-md"] == writes ==> A["ARCHITECTURE.md"]
-  ad["adr-md"] == writes ==> D["adr/"]
-  gm["glossary-md"] == writes ==> G["GLOSSARY.md"]
-  ad -- new terms on accept --> gm
-  am -. links decisions .-> D
-  ad -. checks components .-> A
-  br["brief"] -. reads .-> A
-  br -. reads .-> D
-  br -. reads .-> G
+  code["source code"]:::io --> am("architecture-md"):::skill
+  dec["decisions you made"]:::io --> ad("adr-md"):::skill
+  words["terms you use"]:::io --> gm("glossary-md"):::skill
+  ad -. terms on accept .-> gm
+
+  subgraph docs["docs/ in your repo"]
+    A["ARCHITECTURE.md<br/>what the system is"]:::file
+    D["adr/<br/>why it is built that way"]:::file
+    G["GLOSSARY.md<br/>what the terms mean"]:::file
+  end
+
+  am == writes ==> A
+  ad == writes ==> D
+  gm == writes ==> G
+
+  A & D & G -. read .-> br("brief"):::skill
+  br --> chat["answer in chat"]:::io
+
+  classDef skill fill:#dbeafe,stroke:#1d4ed8,stroke-width:2px,color:#1e3a8a
+  classDef file fill:#f8fafc,stroke:#64748b,stroke-dasharray:4 3,color:#0f172a
+  classDef io fill:none,stroke:none
+  style docs fill:none,stroke:#94a3b8
 ```
 
-Thick arrows write, dotted arrows read. `architecture-md` links the key decisions it finds to their ADRs, `adr-md` checks a decision against the components it touches, and `brief` looks up an ADR for the reason behind a choice before it criticizes it. Existing files are used where they are: an `ARCHITECTURE.md` at the root, a `TERMINOLOGY.md`, ADRs in `docs/decisions/` or `adr/`.
+Blue boxes are skills, dashed boxes are files in your repo. Thick arrows write; dotted arrows read or hand over. Beyond what is drawn, `architecture-md` links the key decisions it finds to their ADRs, `adr-md` checks a decision against the components it touches, and `brief` looks up an ADR for the reason behind a choice before it criticizes it. Existing files are used where they are: an `ARCHITECTURE.md` at the root, a `TERMINOLOGY.md`, ADRs in `docs/decisions/` or `adr/`.
 
 ## Output
 
