@@ -13,6 +13,7 @@ One detailed `ARCHITECTURE.md` written from the code, for onboarding, reference,
 - **Static reading.** Missing evidence never stops the run; it becomes a marked gap ([quality.md](references/quality.md)).
 - **Code over docs.** READMEs, wikis and comments are leads. Where they contradict the code, the doc follows the code and notes the conflict with both citations.
 - **Observed or inferred.** Every fact cites `path:line` or `path:start-end`. Every inference starts with *Inferred:* and names what it rests on. Nothing unmarked is a guess.
+- **Glossary for names, code for facts.** A glossary (`GLOSSARY.md` or `TERMINOLOGY.md`, at the root or in `docs/`) sets what things are called. Name concepts with its terms; where the code uses another name, give the mapping once (class `Task`, the glossary's *job*). Where the code contradicts a definition, the doc follows the code and notes the conflict with both citations. Never copy definitions into the doc or write to the glossary. No glossary is not a gap: names follow the code.
 
 ## Options
 
@@ -46,17 +47,17 @@ If the request already says to go ahead without asking, that counts as the yes f
 
 Show the phases (in the harness's task list if it has one) and one line per unit explored and per section written.
 
-1. **Inputs.** Resolve path, level, sections and output. Record HEAD (full and short SHA), the remote URL with any embedded credentials removed (else `none`), and the release version from release manifests or package files (else `none`). If source files have uncommitted changes, say so: the doc reads the working tree but records HEAD. Announce path, level, sections and output.
+1. **Inputs.** Resolve path, level, sections and output. Record HEAD (full and short SHA), the remote URL with any embedded credentials removed (else `none`), and the release version from release manifests or package files (else `none`). If source files have uncommitted changes, say so: the doc reads the working tree but records HEAD. Read the glossary if there is one; if there are several, read them all. Announce path, level, sections, output and the glossary used, if any.
 2. **Existing doc.** If the output file exists, follow [regenerate.md](references/regenerate.md) up to its choice. On cancel, stop.
 3. **Estimate.** Count and estimate as in [explore.md](references/explore.md); show the numbers and ask to continue.
 4. **Explore.** Map, divide, merge and trace as in [explore.md](references/explore.md).
 5. **Plan.** Build this repo's outline from [sections.md](references/sections.md): drop sections that don't apply (say which and why), mark thin ones as gaps, announce the outline.
-6. **Write.** Write sections in the order sections.md sets, from the merged findings, marking gaps as [quality.md](references/quality.md) shows. With subagents, sections that don't depend on each other can be written in parallel, each subagent given the findings, sections.md and quality.md; otherwise write them one after another.
+6. **Write.** Write sections in the order sections.md sets, from the merged findings, marking gaps as [quality.md](references/quality.md) shows. With subagents, sections that don't depend on each other can be written in parallel, each subagent given the findings, the glossary terms, sections.md and quality.md; otherwise write them one after another.
 7. **Check and save.** Run the checks in [quality.md](references/quality.md) and fix what they find. Then write the file once and report.
 
 ## Report
 
-End with, in chat: output path, level, commit and mode (new, update or rewrite); sections written, updated, copied unchanged and skipped; the number of gaps with the most important open questions; uncovered files; conflicts between docs and code; the `--verify` result if it ran; any size warning from quality.md.
+End with, in chat: output path, level, commit and mode (new, update or rewrite); sections written, updated, copied unchanged and skipped; the number of gaps with the most important open questions; uncovered files; the glossary used, or that none was found and `glossary-md` can start one; terms that several glossaries define differently, suggesting `glossary-md` to merge them; conflicts between docs and code, the glossary included; the `--verify` result if it ran; any size warning from quality.md.
 
 ## References
 

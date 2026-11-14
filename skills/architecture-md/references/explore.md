@@ -34,7 +34,7 @@ One quick pass over the layout, the manifests and the entry points. List every u
 - **Cross-cutting explorers:** infrastructure and CI; auth and security; configuration and secrets; data stores; observability. In a small repo, one explorer can take several areas.
 - **Large units split again.** A unit above about 150 source files or 20k lines is divided into sub-units by its own folders or packages, each with its own explorer.
 - **Scale.** The number of explorers follows the estimate's factor, at most about 8 running at a time; queue the rest. At factor 0.5, explore in the main thread without subagents.
-- **Briefing.** Each explorer gets its unit or area, the files it owns, the matching discovery signals, the ground rules from SKILL.md and the findings format.
+- **Briefing.** Each explorer gets its unit or area, the files it owns, the matching discovery signals, the ground rules from SKILL.md, the glossary terms if there is a glossary, and the findings format.
 - **Without subagents,** run the same explorers one after another in the main thread, recording findings in the same format. Keep findings in the conversation; write no intermediate files.
 
 ## Discovery signals
@@ -67,6 +67,8 @@ open_questions:
 - <specific question the code can't answer>
 links:
 - <other unit or external system>: <how they connect> (<path:line>)
+terms:
+- <name in the code> = <glossary term>, or: contradicts <term>: <how> (<path:line>)
 uncovered:
 - <path>: <why it was not read>
 ```

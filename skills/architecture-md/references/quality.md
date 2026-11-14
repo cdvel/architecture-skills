@@ -24,7 +24,7 @@ Run these on the assembled doc; fix what they find or turn it into a gap.
 
 - **Completeness.** Every unit on the map has a Components entry. Env vars, integrations, deployment, security and observability are covered or carry a gap. Every first-tier section from [sections.md](sections.md) is present.
 - **Evidence.** Sample about ten cited paths and confirm they exist at those lines. Quoted code matches the files. Configuration matches the example env files and the code that reads env vars. Endpoints match the route definitions. Schemas match the migrations.
-- **Existing docs.** Compare the README and other docs against the code. Each contradiction is recorded with both citations, as the ground rules in SKILL.md require.
+- **Existing docs.** Compare the README, the glossary and other docs against the code. Each contradiction is recorded with both citations, as the ground rules in SKILL.md require. Concepts the glossary defines carry its terms, with the code's name mapped once where it differs.
 - **Coverage by reader.** A new hire finds the purpose, the components and the key paths. An operator finds deployment, configuration, observability and CI/CD. A security reviewer finds trust boundaries, auth, secrets and the threat table. An architect finds the diagrams, the data flows and the key decisions.
 - **Headings and links.** Headings follow [sections.md](sections.md); every contents link and cross-reference resolves to a heading.
 - **Size.** At comprehensive level, code blocks under 50 lines and sections under 500 lines. At either level, above about 3,500 lines in total, suggest a split in the report (for example one file per unit); don't split unasked.
